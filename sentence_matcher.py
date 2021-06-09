@@ -32,7 +32,8 @@ def make_dict(mappings):
     return d
 
 
-def mapping(truth_names, unknown_names, show_progress_bar=False, batch_size=500, kind='list'):
+def mapping(truth_names, unknown_names, show_progress_bar=False, batch_size=200 if device == 'gpu' else 32, kind='list'):
+
     assert kind in ['list', 'map'], "expected '{}'".format("/".join(['list', 'map']))
     unknown_embeddings = model.encode(unknown_names, batch_size=batch_size, show_progress_bar=show_progress_bar)
     truth_embeddings = model.encode(truth_names, batch_size=batch_size, show_progress_bar=show_progress_bar)
@@ -44,7 +45,7 @@ def mapping(truth_names, unknown_names, show_progress_bar=False, batch_size=500,
 
 
 def mapping_to_dataframe(mapping_list, truth_names, unknown_names):
-    assert type(mapping_list) == 'List', "expected a list version of a mapping"
+    assert isinstance(mapping_list, list)
     result = []
     for m in mapping_list:
         result.append({
