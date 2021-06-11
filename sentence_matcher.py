@@ -18,8 +18,7 @@ def make_dict(mappings):
     return d
 
 
-def mapping(truth_names, unknown_names, show_progress_bar=False, batch_size=200 if device == 'gpu' else 32, kind='list', model_name='LaBSE_8.model'):
-    model_path = './data/models'
+def mapping(truth_names, unknown_names, show_progress_bar=False, batch_size=200 if device == 'gpu' else 32, kind='list', model_name='LaBSE_8.model', model_path = './data/models'):
     model_name_zip = '{}.zip'.format(model_name)
     model_path_name = path.join(model_path, model_name)
 
