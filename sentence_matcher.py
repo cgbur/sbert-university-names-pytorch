@@ -8,20 +8,6 @@ from sentence_transformers import SentenceTransformer
 from collections import namedtuple
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-
-model_path = './data/models'
-model_name = 'LaBSE_8.model'
-model_name_zip = 'LaBSE_8.model.zip'
-model_path_name = path.join(model_path, model_name)
-
-if not path.exists(model_path):
-    os.mkdir(model_path)
-
-if not path.exists(model_path_name):
-    print(model_path_name, "dne, please download a model and unzip it")
-    exit(1)
-
-model = SentenceTransformer(model_path_name)
 Mapping = namedtuple("Mapping", "index_truth index_unknown probability")
 
 
@@ -32,7 +18,19 @@ def make_dict(mappings):
     return d
 
 
-def mapping(truth_names, unknown_names, show_progress_bar=False, batch_size=200 if device == 'gpu' else 32, kind='list'):
+def mapping(truth_names, unknown_names, show_progress_bar=False, batch_size=200 if device == 'gpu' else 32, kind='list', model_name='LaBSE_8.model'):
+    model_path = './data/models'
+    model_name_zip = '{}.zip'.format(model_name)
+    model_path_name = path.join(model_path, model_name)
+
+    if not path.exists(model_path):
+        os.mkdir(model_path)
+
+    if not path.exists(model_path_name):
+        print(model_path_name, "dne, please download a model and unzip it")
+        exit(1)
+
+    model = SentenceTransformer(model_path_name)
 
     assert kind in ['list', 'map'], "expected '{}'".format("/".join(['list', 'map']))
     unknown_embeddings = model.encode(unknown_names, batch_size=batch_size, show_progress_bar=show_progress_bar)
