@@ -21,6 +21,29 @@ def make_dict(mappings):
     return d
 
 
+def check_model(model_path, model_name):
+    model_path_name = path.join(model_path, model_name)
+
+    if not path.exists(model_path):
+        os.mkdir(model_path)
+
+    if not path.exists(model_path_name):
+        print(model_path_name, "dne, please download a model and unzip it")
+        exit(1)
+
+    return model_path_name
+
+
+def get_model(model_path_name):
+    if model_path_name in loaded_models:
+        model = loaded_models[model_path_name]
+    else:
+        model = SentenceTransformer(model_path_name)
+        loaded_models[model_path_name] = model
+
+    return model
+
+
 def encode_with_cache(sentences, cache, model, batch_size, show_progress_bar):
     result = np.zeros((len(sentences), 768))
     todos = []
@@ -45,16 +68,6 @@ def encode_with_cache(sentences, cache, model, batch_size, show_progress_bar):
         result[i] = cache[sentence]
 
     return result
-
-
-def get_model(model_path_name):
-    if model_path_name in loaded_models:
-        model = loaded_models[model_path_name]
-    else:
-        model = SentenceTransformer(model_path_name)
-        loaded_models[model_path_name] = model
-
-    return model
 
 
 def mapping(truth_names, unknown_names, show_progress_bar=False,
@@ -113,19 +126,6 @@ def load_cache(model_name='LaBSE_8.model', model_path='./data/models'):
     else:
         print('Cache not found for {}. Consider creating one ahead of time for a speed up'.format(model_path_name))
         return {}
-
-
-def check_model(model_path, model_name):
-    model_path_name = path.join(model_path, model_name)
-
-    if not path.exists(model_path):
-        os.mkdir(model_path)
-
-    if not path.exists(model_path_name):
-        print(model_path_name, "dne, please download a model and unzip it")
-        exit(1)
-
-    return model_path_name
 
 
 def get_embeddings(sentences, model_name='LaBSE_8.model', model_path='./data/models'):
