@@ -111,9 +111,9 @@ def make_cache(s, batch_size=200 if device == 'gpu' else 32,
     model_path_name = check_model(model_path, model_name)
     model = get_model(model_path_name)
 
-    em = model.encode(s)
+    em = model.encode(s, batch_size=batch_size)
     c = load_cache(model_name, model_path)
-    
+
     for s, e in zip(s, em):
         c[s] = e.tolist()
 
