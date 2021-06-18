@@ -60,9 +60,10 @@ def encode_with_cache(sentences, cache, model, batch_size, show_progress_bar):
             dones.append(s)
             dones_idx.append(i)
 
-    todos_embedding = model.encode(todos, batch_size=batch_size, show_progress_bar=show_progress_bar)
-    for i, embedding in zip(todos_idx, todos_embedding):
-        result[i] = embedding
+    if len(todos) > 0:
+        todos_embedding = model.encode(todos, batch_size=batch_size, show_progress_bar=show_progress_bar)
+        for i, embedding in zip(todos_idx, todos_embedding):
+            result[i] = embedding
 
     for i, sentence in zip(dones_idx, dones):
         result[i] = cache[sentence]
